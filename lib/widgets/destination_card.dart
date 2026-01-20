@@ -19,140 +19,207 @@ class DestinationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: const Color(0xFFDBD3D8),
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
+      child: Hero(
+        tag: 'destination-card-${destination.id}',
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.08),
+                  blurRadius: 15,
+                  offset: const Offset(0, 8),
+                  spreadRadius: 0,
+                ),
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-           
-            ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-              child: Image.network(
-                destination.imageUrl,
-                height: 150,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-            ),
-            
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        destination.name,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF223843),
-                        ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+
+                Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                      child: Image.network(
+                        destination.imageUrl,
+                        height: 180,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
                       ),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.location_on,
-                            size: 16,
-                            color: Color(0xFFD77A61),
+                    ),
+                if (destination.visited)
+                  Positioned(
+                    top: 12,
+                    right: 12,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFFD77A61), Color(0xFFc96a51)],
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
                           ),
-                          const SizedBox(width: 4),
+                        ],
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.check_circle, color: Colors.white, size: 14),
+                          SizedBox(width: 4),
                           Text(
-                            destination.country,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Color(0xFF223843),
+                            'Vizitat',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
-                 
+              ],
+            ),
+
+
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                     
-                      GestureDetector(
-                        onTap: onVisitedChanged,
+                      Expanded(
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'Am vizitat',
-                              style: TextStyle(
-                                fontSize: 10,
+                            Text(
+                              destination.name,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
                                 color: Color(0xFF223843),
+                                letterSpacing: 0.3,
                               ),
                             ),
-                            const SizedBox(height: 4),
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: destination.visited
-                                    ? const Color(0xFFD77A61)
-                                    : Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: const Color(0xFFD77A61),
-                                  width: 2,
+                            const SizedBox(height: 6),
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFD77A61).withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: const Icon(
+                                    Icons.location_on,
+                                    size: 14,
+                                    color: Color(0xFFD77A61),
+                                  ),
                                 ),
-                              ),
-                              child: Icon(
-                                destination.visited ? Icons.check : Icons.check,
-                                size: 16,
-                                color: destination.visited
-                                    ? Colors.white
-                                    : const Color(0xFFD77A61),
-                              ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  destination.country,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey[600],
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      
-                      GestureDetector(
-                        onTap: onDelete,
-                        child: Column(
-                          children: [
-                            const Text(
-                              'Șterge',
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: Color(0xFF223843),
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Container(
-                              padding: const EdgeInsets.all(8),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: onVisitedChanged,
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
                               decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
+                                gradient: destination.visited
+                                    ? const LinearGradient(
+                                        colors: [Color(0xFFD77A61), Color(0xFFc96a51)],
+                                      )
+                                    : null,
+                                color: destination.visited ? null : const Color(0xFFF5F5F5),
+                                borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: const Color(0xFF223843),
-                                  width: 2,
+                                  color: destination.visited
+                                      ? Colors.transparent
+                                      : Colors.grey[300]!,
+                                  width: 1.5,
                                 ),
                               ),
-                              child: const Icon(
-                                Icons.delete_outline,
-                                size: 16,
-                                color: Color(0xFF223843),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    destination.visited ? Icons.check_circle : Icons.check_circle_outline,
+                                    size: 18,
+                                    color: destination.visited ? Colors.white : const Color(0xFFD77A61),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    destination.visited ? 'Vizitat' : 'Marchează',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                      color: destination.visited ? Colors.white : const Color(0xFF223843),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: onDelete,
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.red[50],
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: Colors.red[200]!,
+                                width: 1.5,
+                              ),
+                            ),
+                            child: Icon(
+                              Icons.delete_outline,
+                              size: 20,
+                              color: Colors.red[400],
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -160,7 +227,9 @@ class DestinationCard extends StatelessWidget {
                 ],
               ),
             ),
-          ],
+              ],
+            ),
+          ),
         ),
       ),
     );
