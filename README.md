@@ -9,6 +9,11 @@ O aplicație Flutter modernă și elegantă pentru gestionarea destinațiilor ta
   <img src="assets/adauga.png" alt="Adaugă Destinație" width="300"/>
 </div>
 
+<div align="center">
+  <img src="assets/culori.png" alt="Paletă de Culori" width="400"/>
+  <p><em>Paleta de culori folosită în aplicație</em></p>
+</div>
+
 ## ✨ Funcționalități
 
 ### 🏠 Ecran Principal
@@ -36,6 +41,15 @@ O aplicație Flutter modernă și elegantă pentru gestionarea destinațiilor ta
 - **Card pentru perioada recomandată** - Vizualizează când e cel mai bun moment să vizitezi
 - **Lista de atracții turistice** - Card-uri individuale pentru fiecare atracție
 - **Buton back elegant** - Navigare ușoară înapoi la listă
+
+### 🌍 Destinații Predefinite
+Aplicația vine cu o listă de destinații exemple pentru a demonstra funcționalitățile:
+- **Santorini, Grecia** - Insula vulcanică cu case albe și apusuri spectaculoase
+- **Bali, Indonezia** - Paradis tropical cu temple și plaje exotice
+- **Paris, Franța** - Orașul luminilor cu Turnul Eiffel și artă
+- **Kyoto, Japonia** - Orașe cu temple antice și grădini zen
+- **Machu Picchu, Peru** - Cetate incașă în munți
+- **Islanda** - Peisaje vulcanice și aurora boreală
 
 ## 🎨 Design
 
