@@ -192,25 +192,6 @@ Toate câmpurile sunt validate cu reguli custom:
 
 ---
 
-## 🎯 Roadmap Funcționalități Viitoare
-
-- [ ] **Persistență date** - SQLite/Hive pentru salvare locală
-- [ ] **Căutare avansată** - Search bar cu filtru live
-- [ ] **Categorii** - Etichetare destinații (beach, mountain, city, etc.)
-- [ ] **Rating sistem** - Notează fiecare destinație (1-5 stele)
-- [ ] **Buget planner** - Estimare costuri pentru fiecare destinație
-- [ ] **Galerie foto** - Multiple imagini per destinație
-- [ ] **Share-uire** - Partajare liste pe social media
-- [ ] **Export/Import** - JSON, PDF, Excel
-- [ ] **Hartă interactivă** - Google Maps integration
-- [ ] **Dark mode** - Temă întunecată
-- [ ] **Multi-limbă** - i18n (RO, EN, FR, ES)
-- [ ] **Cloud sync** - Firebase pentru backup
-- [ ] **Notificări** - Reminder-e pentru călătorii planificate
-- [ ] **AI Recommendations** - Sugestii bazate pe preferințe
-
----
-
 ## 🧪 Testing
 
 Aplicația a fost testată pe:
