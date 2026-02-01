@@ -221,23 +221,6 @@ flutter build web --release
 # Output în: build/web/
 ```
 
----
-
-## 🌍 Destinații Predefinite
-
-Aplicația vine cu 6 destinații populare pentru demonstrație:
-
-| Destinație | Țară | Status | Atracții Principale |
-|-----------|------|---------|-------------------|
-| 🏝️ Santorini | Grecia | Vizitat | Oia, Red Beach, Ancient Thira |
-| 🌴 Bali | Indonezia | - | Ubud, Tanah Lot, Tegallalang Rice Terraces |
-| 🗼 Paris | Franța | Vizitat | Turnul Eiffel, Luvru, Arc de Triomphe |
-| ⛩️ Kyoto | Japonia | - | Fushimi Inari, Kinkaku-ji, Arashiyama |
-| 🏛️ Machu Picchu | Peru | - | Huayna Picchu, Temple of the Sun |
-| 🌋 Islanda | Islanda | - | Blue Lagoon, Gullfoss, Geysir |
-
----
-
 ## 📊 Structura Codului
 
 ### Model de Date
@@ -282,15 +265,6 @@ Toate câmpurile sunt validate cu reguli custom:
 
 ---
 
-## 🧪 Testing
-
-Aplicația a fost testată pe:
-- ✅ Android 11+ (Pixel, Samsung)
-- ✅ iOS 14+ (iPhone)
-- ✅ Chrome Web Browser
-- ✅ Diverse rezoluții de ecran
-
----
 
 ## 📝 Licență
 
