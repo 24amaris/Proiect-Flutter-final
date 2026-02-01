@@ -50,51 +50,59 @@ class DestinationCard extends StatelessWidget {
                   children: [
                     ClipRRect(
                       borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                      child: Image.network(
-                        destination.imageUrl,
-                        height: 180,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                if (destination.visited)
-                  Positioned(
-                    top: 12,
-                    right: 12,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFFD77A61), Color(0xFFc96a51)],
-                        ),
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.3),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.check_circle, color: Colors.white, size: 14),
-                          SizedBox(width: 4),
-                          Text(
-                            'Vizitat',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
+                      child: destination.imageUrl.startsWith('assets/')
+                          ? Image.asset(
+                              destination.imageUrl,
+                              height: 180,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            )
+                          : Image.network(
+                              destination.imageUrl,
+                              height: 180,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
                             ),
-                          ),
-                        ],
-                      ),
                     ),
-                  ),
-              ],
-            ),
+                    // Badge Vizitat
+                    if (destination.visited)
+                      Positioned(
+                        top: 12,
+                        right: 12,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFFD77A61), Color(0xFFc96a51)],
+                            ),
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.3),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.check_circle, color: Colors.white, size: 14),
+                              SizedBox(width: 4),
+                              Text(
+                                'Vizitat',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
 
 
             Padding(
@@ -143,6 +151,64 @@ class DestinationCard extends StatelessWidget {
                                   ),
                                 ),
                               ],
+                            ),
+                            const SizedBox(height: 6),
+                            Wrap(
+                              spacing: 4,
+                              runSpacing: 4,
+                              children: destination.seasons.map((season) {
+                                IconData icon;
+                                Color color;
+
+                                switch (season) {
+                                  case 'Primăvară':
+                                    icon = Icons.eco;
+                                    color = const Color(0xFF81C784);
+                                    break;
+                                  case 'Vară':
+                                    icon = Icons.wb_sunny;
+                                    color = const Color(0xFFFFB74D);
+                                    break;
+                                  case 'Toamnă':
+                                    icon = Icons.park;
+                                    color = const Color(0xFFFF8A65);
+                                    break;
+                                  case 'Iarnă':
+                                    icon = Icons.ac_unit;
+                                    color = const Color(0xFF64B5F6);
+                                    break;
+                                  default:
+                                    icon = Icons.wb_sunny;
+                                    color = Colors.grey;
+                                }
+
+                                return Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: color.withValues(alpha: 0.15),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: color.withValues(alpha: 0.4),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(icon, size: 12, color: color),
+                                      const SizedBox(width: 3),
+                                      Text(
+                                        season,
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          color: color,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }).toList(),
                             ),
                           ],
                         ),

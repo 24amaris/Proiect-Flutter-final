@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import '../common/app_strings.dart';
+import '../common/app_theme.dart';
 import '../models/destination.dart';
 import '../data/destination_data.dart';
+import '../utils/validators.dart';
+import '../utils/dialog_helper.dart';
 
 class AddDestinationScreen extends StatefulWidget {
   const AddDestinationScreen({super.key});
@@ -10,12 +14,15 @@ class AddDestinationScreen extends StatefulWidget {
 }
 
 class _AddDestinationScreenState extends State<AddDestinationScreen> {
+  final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _countryController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _imageUrlController = TextEditingController();
-  final _bestPeriodController = TextEditingController();
+  final _budgetController = TextEditingController();
   final _attractionsController = TextEditingController();
+
+  final Set<String> _selectedSeasons = {};
   bool _visited = false;
 
   @override
@@ -24,301 +31,469 @@ class _AddDestinationScreenState extends State<AddDestinationScreen> {
     _countryController.dispose();
     _descriptionController.dispose();
     _imageUrlController.dispose();
-    _bestPeriodController.dispose();
+    _budgetController.dispose();
     _attractionsController.dispose();
     super.dispose();
   }
-// Salvarea noii destinații
+
+  /// Salvarea noii destinații
   void _saveDestination() {
-    if (_nameController.text.isEmpty || _countryController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Te rog completează numele și țara!'),
-          backgroundColor: Color(0xFFD77A61),
-        ),
+    // Validare sezoane
+    if (_selectedSeasons.isEmpty) {
+      DialogHelper.showSnackBar(
+        context,
+        AppStrings.validationSeasonsRequired,
+        isError: true,
       );
       return;
     }
-// Crearea unei noi destinații
-    final newDestination = Destination(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      name: _nameController.text,
-      country: _countryController.text,
-      imageUrl: _imageUrlController.text.isNotEmpty
-          ? _imageUrlController.text
-          : 'https://unsplash.com/photos/globe-map-scroll-lot-a6mfMjCFkII',
-      description: _descriptionController.text.isNotEmpty
-          ? _descriptionController.text
-          : 'O destinație minunată de explorat.',
-      bestPeriod: _bestPeriodController.text.isNotEmpty
-          ? _bestPeriodController.text
-          : 'Tot anul',
-      attractions: _attractionsController.text.isNotEmpty
-          ? _attractionsController.text.split(',').map((e) => e.trim()).toList()
-          : ['De explorat'],
-      visited: _visited,
-    );
 
-    destinations.add(newDestination);
-    Navigator.pop(context, true);
+    if (_formKey.currentState!.validate()) {
+      final newDestination = Destination(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        name: _nameController.text.trim(),
+        country: _countryController.text.trim(),
+        imageUrl: _imageUrlController.text.trim(),
+        description: _descriptionController.text.trim(),
+        seasons: _selectedSeasons.toList(),
+        budget: double.parse(_budgetController.text.trim()),
+        attractions: _attractionsController.text
+            .split(',')
+            .map((e) => e.trim())
+            .where((e) => e.isNotEmpty)
+            .toList(),
+        visited: _visited,
+      );
+
+      destinations.add(newDestination);
+
+      if (mounted) {
+        DialogHelper.showSnackBar(
+          context,
+          'Destinația a fost adăugată cu succes!',
+        );
+        Navigator.pop(context, true);
+      }
+    }
   }
-// ecran pentru adăugarea unei destinații noi
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      backgroundColor: AppTheme.background,
       appBar: AppBar(
         title: const Text(
-          'Adaugă Destinație',
+          AppStrings.addTitle,
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
-            fontSize: 20,
+            fontSize: AppTheme.fontSizeLarge,
           ),
         ),
-        backgroundColor: const Color(0xFF223843),
+        backgroundColor: AppTheme.primaryDark,
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.white),
         elevation: 0,
         flexibleSpace: Container(
           decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF1a2930), Color(0xFF223843)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+            gradient: AppTheme.primaryGradient,
           ),
         ),
       ),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 500),
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildLabel('Nume *'),
-                _buildTextField(_nameController, 'Ex: Santorini'),
-
-                const SizedBox(height: 16),
-
-                _buildLabel('Țara *'),
-                _buildTextField(_countryController, 'Ex: Grecia'),
-
-                const SizedBox(height: 16),
-
-                _buildLabel('Descriere'),
-                _buildTextField(
-                  _descriptionController,
-                  'Descrie destinația...',
-                  maxLines: 3,
-                ),
-
-                const SizedBox(height: 16),
-
-                _buildLabel('URL Imagine'),
-                _buildTextField(_imageUrlController, 'https://...'),
-
-                const SizedBox(height: 16),
-
-                _buildLabel('Perioada recomandată'),
-                _buildTextField(_bestPeriodController, 'Ex: Aprilie - Octombrie'),
-
-                const SizedBox(height: 16),
-
-                _buildLabel('Atracții (separate prin virgulă)'),
-                _buildTextField(
-                  _attractionsController,
-                  'Ex: Plaja, Muzeu, Parc',
-                ),
-
-                const SizedBox(height: 16),
-
-
-
-                Container(
-                  padding: const EdgeInsets.all(18),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: const Color(0xFFD77A61).withValues(alpha: 0.3),
-                      width: 2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          gradient: _visited
-                              ? const LinearGradient(
-                                  colors: [Color(0xFFD77A61), Color(0xFFc96a51)],
-                                )
-                              : null,
-                          color: _visited ? null : Colors.grey[200],
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Checkbox(
-                          value: _visited,
-                          onChanged: (value) {
-                            setState(() {
-                              _visited = value ?? false;
-                            });
-                          },
-                          activeColor: Colors.transparent,
-                          checkColor: Colors.white,
-                          side: BorderSide.none,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      const Expanded(
-                        child: Text(
-                          'Am vizitat deja această destinație',
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Color(0xFF223843),
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 30),
-
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFFD77A61), Color(0xFFc96a51)],
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFFD77A61).withValues(alpha: 0.4),
-                        blurRadius: 12,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
-                  ),
-                  child: ElevatedButton(
-                    onPressed: _saveDestination,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                      shadowColor: Colors.transparent,
-                      padding: const EdgeInsets.symmetric(vertical: 18),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.check_circle_outline,
-                          color: Colors.white,
-                          size: 24,
-                        ),
-                        SizedBox(width: 10),
-                        Text(
-                          'Salvează Destinația',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          padding: const EdgeInsets.all(AppTheme.spacingLarge),
+          children: [
+            // Nume destinație
+            _buildLabel(AppStrings.addNameLabel),
+            _buildTextField(
+              _nameController,
+              AppStrings.addNameHint,
+              validator: Validators.validateDestinationName,
             ),
-          ),
+            const SizedBox(height: AppTheme.spacingLarge),
+
+            // Țară
+            _buildLabel(AppStrings.addCountryLabel),
+            _buildTextField(
+              _countryController,
+              AppStrings.addCountryHint,
+              validator: Validators.validateCountry,
+            ),
+            const SizedBox(height: AppTheme.spacingLarge),
+
+            // Descriere
+            _buildLabel(AppStrings.addDescriptionLabel),
+            _buildTextField(
+              _descriptionController,
+              AppStrings.addDescriptionHint,
+              maxLines: 4,
+              validator: Validators.validateDescription,
+            ),
+            const SizedBox(height: AppTheme.spacingLarge),
+
+            // URL Imagine
+            _buildLabel(AppStrings.addImageLabel),
+            _buildTextField(
+              _imageUrlController,
+              AppStrings.addImageHint,
+              validator: Validators.validateImageUrl,
+            ),
+            const SizedBox(height: AppTheme.spacingLarge),
+
+            // Buget
+            _buildLabel(AppStrings.addBudgetLabel),
+            _buildTextField(
+              _budgetController,
+              AppStrings.addBudgetHint,
+              keyboardType: TextInputType.number,
+              validator: Validators.validateBudget,
+            ),
+            const SizedBox(height: AppTheme.spacingLarge),
+
+            // Selector sezoane
+            _buildLabel(AppStrings.addSeasonsLabel),
+            _buildSeasonSelector(),
+            const SizedBox(height: AppTheme.spacingLarge),
+
+            // Atracții
+            _buildLabel(AppStrings.addAttractionsLabel),
+            _buildTextField(
+              _attractionsController,
+              AppStrings.addAttractionsHint,
+              maxLines: 3,
+              validator: Validators.validateAttractions,
+            ),
+            const SizedBox(height: AppTheme.spacingLarge),
+
+            // Checkbox vizitat
+            Container(
+              padding: const EdgeInsets.all(AppTheme.spacingLarge),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+                border: Border.all(
+                  color: AppTheme.accent.withValues(alpha: 0.3),
+                  width: 2,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppTheme.shadowLight,
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: _visited ? AppTheme.accentGradient : null,
+                      color: _visited ? null : Colors.grey[200],
+                      borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
+                    ),
+                    child: Checkbox(
+                      value: _visited,
+                      onChanged: (value) {
+                        setState(() {
+                          _visited = value ?? false;
+                        });
+                      },
+                      activeColor: Colors.transparent,
+                      checkColor: Colors.white,
+                      side: BorderSide.none,
+                    ),
+                  ),
+                  const SizedBox(width: AppTheme.spacingSmall),
+                  const Expanded(
+                    child: Text(
+                      AppStrings.addVisitedCheckbox,
+                      style: TextStyle(
+                        fontSize: AppTheme.fontSizeMedium,
+                        color: AppTheme.primaryDark,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: AppTheme.spacingXXLarge),
+
+            // Buton salvare
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                gradient: AppTheme.accentGradient,
+                borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+                boxShadow: AppTheme.buttonShadow(AppTheme.accent),
+              ),
+              child: ElevatedButton(
+                onPressed: _saveDestination,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: AppTheme.spacingLarge,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+                  ),
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.check_circle_outline,
+                      color: Colors.white,
+                      size: AppTheme.iconSizeLarge,
+                    ),
+                    SizedBox(width: AppTheme.spacingMedium),
+                    Text(
+                      AppStrings.addSaveButton,
+                      style: TextStyle(
+                        fontSize: AppTheme.fontSizeLarge,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
-// Eticheta pentru câmpurile de text
+
+  /// Widget pentru etichetă
   Widget _buildLabel(String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: AppTheme.spacingMedium),
       child: Text(
         text,
         style: const TextStyle(
-          fontSize: 15,
+          fontSize: AppTheme.fontSizeMedium,
           fontWeight: FontWeight.w600,
-          color: Color(0xFF223843),
+          color: AppTheme.primaryDark,
         ),
       ),
     );
   }
-// ca un câmp de text reutilizabil - helper
+
+  /// Widget pentru câmp de text
   Widget _buildTextField(
     TextEditingController controller,
     String hint, {
     int maxLines = 1,
+    TextInputType? keyboardType,
+    String? Function(String?)? validator,
   }) {
     return Container(
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
+            color: AppTheme.shadowLight,
+            blurRadius: AppTheme.elevationSmall,
             offset: const Offset(0, 2),
           ),
         ],
       ),
-      child: TextField(
+      child: TextFormField(
         controller: controller,
         maxLines: maxLines,
+        keyboardType: keyboardType,
+        validator: validator,
         style: const TextStyle(
-          fontSize: 15,
-          color: Color(0xFF223843),
+          fontSize: AppTheme.fontSizeMedium,
+          color: AppTheme.primaryDark,
         ),
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: TextStyle(
-            color: Colors.grey[400],
-            fontSize: 14,
+            color: AppTheme.textLight,
+            fontSize: AppTheme.fontSizeMedium,
           ),
           filled: true,
           fillColor: Colors.white,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
             borderSide: BorderSide(
-              color: Colors.grey[200]!,
+              color: AppTheme.borderLight,
               width: 1.5,
             ),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
             borderSide: BorderSide(
-              color: Colors.grey[200]!,
+              color: AppTheme.borderLight,
               width: 1.5,
             ),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
             borderSide: const BorderSide(
-              color: Color(0xFFD77A61),
+              color: AppTheme.accent,
+              width: 2,
+            ),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+            borderSide: BorderSide(
+              color: Colors.red[400]!,
+              width: 2,
+            ),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+            borderSide: BorderSide(
+              color: Colors.red[400]!,
               width: 2,
             ),
           ),
           contentPadding: const EdgeInsets.symmetric(
-            horizontal: 18,
-            vertical: 16,
+            horizontal: AppTheme.spacingLarge,
+            vertical: AppTheme.spacingLarge,
           ),
+        ),
+      ),
+    );
+  }
+
+  /// Widget pentru selector de sezoane
+  Widget _buildSeasonSelector() {
+    return Container(
+      padding: const EdgeInsets.all(AppTheme.spacingLarge),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+        border: Border.all(
+          color: _selectedSeasons.isEmpty
+              ? Colors.red[300]!
+              : AppTheme.borderLight,
+          width: _selectedSeasons.isEmpty ? 2 : 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.shadowLight,
+            blurRadius: AppTheme.elevationSmall,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (_selectedSeasons.isEmpty)
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppTheme.spacingSmall),
+              child: Text(
+                'Selectează cel puțin un sezon',
+                style: TextStyle(
+                  fontSize: AppTheme.fontSizeSmall,
+                  color: Colors.red[400],
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          Wrap(
+            spacing: AppTheme.spacingSmall,
+            runSpacing: AppTheme.spacingSmall,
+            children: [
+              _buildSeasonChip(
+                AppStrings.seasonSpring,
+                Icons.eco,
+                const Color(0xFF81C784),
+              ),
+              _buildSeasonChip(
+                AppStrings.seasonSummer,
+                Icons.wb_sunny,
+                const Color(0xFFFFB74D),
+              ),
+              _buildSeasonChip(
+                AppStrings.seasonAutumn,
+                Icons.park,
+                const Color(0xFFFF8A65),
+              ),
+              _buildSeasonChip(
+                AppStrings.seasonWinter,
+                Icons.ac_unit,
+                const Color(0xFF64B5F6),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Widget pentru chip de sezon
+  Widget _buildSeasonChip(String season, IconData icon, Color color) {
+    final isSelected = _selectedSeasons.contains(season);
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          if (isSelected) {
+            _selectedSeasons.remove(season);
+          } else {
+            _selectedSeasons.add(season);
+          }
+        });
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppTheme.spacingMedium,
+          vertical: AppTheme.spacingSmall,
+        ),
+        decoration: BoxDecoration(
+          color: isSelected ? color : Colors.white,
+          borderRadius: BorderRadius.circular(AppTheme.radiusRound),
+          border: Border.all(
+            color: isSelected ? color : AppTheme.borderLight,
+            width: isSelected ? 2 : 1.5,
+          ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: color.withValues(alpha: 0.3),
+                    blurRadius: AppTheme.elevationMedium,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : [],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: AppTheme.iconSizeSmall,
+              color: isSelected ? Colors.white : color,
+            ),
+            const SizedBox(width: AppTheme.spacingSmall),
+            Text(
+              season,
+              style: TextStyle(
+                fontSize: AppTheme.fontSizeSmall,
+                fontWeight: FontWeight.w600,
+                color: isSelected ? Colors.white : AppTheme.textPrimary,
+              ),
+            ),
+            if (isSelected) ...[
+              const SizedBox(width: AppTheme.spacingSmall),
+              const Icon(
+                Icons.check_circle,
+                size: AppTheme.iconSizeSmall,
+                color: Colors.white,
+              ),
+            ],
+          ],
         ),
       ),
     );

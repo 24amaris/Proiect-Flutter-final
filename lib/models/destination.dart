@@ -1,3 +1,4 @@
+/// Model de date pentru o destinație de călătorie
 class Destination {
   final String id;
   final String name;
@@ -5,7 +6,8 @@ class Destination {
   final String imageUrl;
   final String description;
   final List<String> attractions;
-  final String bestPeriod;
+  final List<String> seasons; // Sezoanele recomandate (Primăvară, Vară, Toamnă, Iarnă)
+  final double budget; // Bugetul estimat în EUR
   bool visited;
 
   Destination({
@@ -15,7 +17,14 @@ class Destination {
     required this.imageUrl,
     required this.description,
     required this.attractions,
-    required this.bestPeriod,
+    required this.seasons,
+    required this.budget,
     this.visited = false,
   });
+
+  /// Returnează sezoanele ca string pentru afișare
+  String get seasonsDisplay => seasons.join(', ');
+
+  /// Returnează bugetul formatat
+  String get budgetDisplay => '€${budget.toStringAsFixed(0)}';
 }

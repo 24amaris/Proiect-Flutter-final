@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'screens/home_screen.dart';
+import 'common/app_strings.dart';
+import 'common/app_theme.dart';
+import 'screens/welcome_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,18 +13,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'WishList',
+      title: AppStrings.appName,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: const Color(0xFF223843),
-        scaffoldBackgroundColor: const Color(0xFFF8F9FA),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF223843),
-          primary: const Color(0xFF223843),
-          secondary: const Color(0xFFD77A61),
-        ),
-      ),
-      home: const HomeScreen(),
+      theme: AppTheme.lightTheme,
+      home: const WelcomeScreen(),
     );
   }
 }

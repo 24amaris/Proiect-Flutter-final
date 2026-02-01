@@ -36,12 +36,19 @@ class DestinationDetailScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        child: Image.network(
-                          destination.imageUrl,
-                          height: 350,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        ),
+                        child: destination.imageUrl.startsWith('assets/')
+                            ? Image.asset(
+                                destination.imageUrl,
+                                height: 350,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              )
+                            : Image.network(
+                                destination.imageUrl,
+                                height: 350,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
                       ),
                     ),
                     Container(
@@ -197,7 +204,7 @@ class DestinationDetailScreen extends StatelessWidget {
 
                           const SizedBox(height: 24),
 
-                          // Perioada recomandată
+                          // Sezoane recomandate
                           Container(
                             padding: const EdgeInsets.all(18),
                             decoration: BoxDecoration(
@@ -215,17 +222,133 @@ class DestinationDetailScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withValues(alpha: 0.9),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: const Icon(
+                                        Icons.wb_sunny_outlined,
+                                        color: Color(0xFF223843),
+                                        size: 26,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 16),
+                                    const Expanded(
+                                      child: Text(
+                                        'Sezoane recomandate',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF223843),
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 8,
+                                  children: destination.seasons.map((season) {
+                                    IconData icon;
+                                    Color color;
+
+                                    switch (season) {
+                                      case 'Primăvară':
+                                        icon = Icons.eco;
+                                        color = const Color(0xFF81C784);
+                                        break;
+                                      case 'Vară':
+                                        icon = Icons.wb_sunny;
+                                        color = const Color(0xFFFFB74D);
+                                        break;
+                                      case 'Toamnă':
+                                        icon = Icons.park;
+                                        color = const Color(0xFFFF8A65);
+                                        break;
+                                      case 'Iarnă':
+                                        icon = Icons.ac_unit;
+                                        color = const Color(0xFF64B5F6);
+                                        break;
+                                      default:
+                                        icon = Icons.wb_sunny;
+                                        color = Colors.grey;
+                                    }
+
+                                    return Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 8,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: color,
+                                        borderRadius: BorderRadius.circular(20),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: color.withValues(alpha: 0.3),
+                                            blurRadius: 8,
+                                            offset: const Offset(0, 4),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(icon, size: 18, color: Colors.white),
+                                          const SizedBox(width: 6),
+                                          Text(
+                                            season,
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          // Buget estimat
+                          Container(
+                            padding: const EdgeInsets.all(18),
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF223843), Color(0xFF1a2930)],
+                              ),
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color(0xFF223843).withValues(alpha: 0.3),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 6),
+                                ),
+                              ],
+                            ),
                             child: Row(
                               children: [
                                 Container(
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha: 0.9),
+                                    color: const Color(0xFFFFD700).withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: const Icon(
-                                    Icons.calendar_month,
-                                    color: Color(0xFF223843),
+                                    Icons.euro,
+                                    color: Color(0xFFFFD700),
                                     size: 26,
                                   ),
                                 ),
@@ -235,20 +358,27 @@ class DestinationDetailScreen extends StatelessWidget {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       const Text(
-                                        'Perioada recomandată',
+                                        'Buget estimat',
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          color: Color(0xFF223843),
+                                          color: Colors.white70,
                                           fontSize: 13,
                                         ),
                                       ),
                                       const SizedBox(height: 4),
                                       Text(
-                                        destination.bestPeriod,
+                                        destination.budgetDisplay,
                                         style: const TextStyle(
-                                          color: Color(0xFF223843),
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white,
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const Text(
+                                        'per persoană',
+                                        style: TextStyle(
+                                          color: Colors.white60,
+                                          fontSize: 12,
                                         ),
                                       ),
                                     ],

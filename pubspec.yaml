@@ -59,9 +59,22 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/home.png
-    - assets/adauga.png
-    - assets/culori.png
+    - assets/Amsterdame.jpeg
+    - assets/Bali.jpeg
+    - assets/Barcelona.jpeg
+    - assets/Croatia.jpeg
+    - assets/Destinatii.png
+    - assets/Dubai.jpeg
+    - assets/Islanda.jpeg
+    - assets/Laponia.jpeg
+    - assets/Lisabona.jpeg
+    - assets/MachuPicchu.jpeg
+    - assets/Paris.jpeg
+    - assets/Praga.jpeg
+    - assets/Roma.jpeg
+    - assets/Santorini.jpeg
+    - assets/Tokyo.jpeg
+    - assets/Viena.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -89,7 +102,3 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
 
-  fonts:
-    - family: Frijole
-      fonts:
-        - asset: fonts/Frijole-Regular.ttf
